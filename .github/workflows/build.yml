@@ -19,4 +19,4 @@ jobs:
         with:
           java-version: 1.11
       - name: Gradle build
-        run: gradle build -b=conveor/build.gradle
+        run: gradle build -b=conveyor/build.gradle
