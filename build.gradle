@@ -1,0 +1,70 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id "org.openapi.generator" version "5.3.1"
+}
+
+group = 'ru.neoflex'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'org.openapi.generator'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.openapitools:openapi-generator-gradle-plugin:6.2.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/open-api/application-dto.yaml".toString()
+    apiPackage = "ru.neoflex.conveor.api"
+    modelPackage = "ru.neoflex.conveor.model"
+    typeMappings = [
+            "double": "java.math.BigDecimal",
+            "date": "java.time.LocalDate",
+            "date-time": "java.time.LocalDateTime",
+            "Date": "LocalDateTime"
+    ]
+    importMappings = [
+            "java.util.Date":  "java.time.LocalDateTime"
+    ]
+    configOptions = [
+            "interfaceOnly": "true",
+            "useBeanValidation": "true",
+            "library": "spring-mvc",
+            "dateLibrary": "java11",
+            "java11": "true",
+            "additionalModelTypeAnnotations": "@lombok.AllArgsConstructor; @lombok.Builder; @lombok.NoArgsConstructor",
+            "useBeanValidation" : "true"
+    ]
+
+}
+
+compileJava.dependsOn tasks.openApiGenerate
+sourceSets.main.java.srcDir "${openApiGenerate.outputDir.get()}/src/main/java"
