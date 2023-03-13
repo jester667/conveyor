@@ -96,7 +96,7 @@ jacocoTestCoverageVerification {
 }
 
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+    executionData tasks.withType(Test)
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: 'ru/neoflex/conveor/model/**')
