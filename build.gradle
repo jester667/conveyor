@@ -97,6 +97,10 @@ jacocoTestCoverageVerification {
 
 jacocoTestReport {
     executionData tasks.withType(Test)
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: 'ru/neoflex/conveor/model/**')
