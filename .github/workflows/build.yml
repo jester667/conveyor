@@ -19,8 +19,8 @@ jobs:
         with:
           java-version: 1.11
       - name: Gradle Verify
-        run: gradle clean test jacocoTestCoverageVerification -b=build.gradle
+        run: gradle build -b=build.gradle
       - name: Test Coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
